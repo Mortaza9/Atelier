@@ -1,0 +1,32 @@
+{
+  "name": "atelier",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "create:table": "tsx lib/migration/createTable.ts",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.15.0",
+    "@swc/jest": "^0.2.39",
+    "@types/aws-lambda": "^8.10.164",
+    "@types/jest": "^30",
+    "@types/node": "^24.10.1",
+    "@types/pg": "^8.23.1",
+    "aws-cdk": "2.1147.0",
+    "jest": "^30",
+    "tsx": "^4.23.0",
+    "typescript": "~7.0.2"
+  },
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.1164.0",
+    "aws-cdk-lib": "^2.275.0",
+    "constructs": "^10.8.1",
+    "kysely": "^0.29.8",
+    "lru-cache": "^11.5.3",
+    "pg": "^8.23.1",
+    "zod": "^4.6.7"
+  }
+}
