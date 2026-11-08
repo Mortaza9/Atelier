@@ -11,11 +11,8 @@ import { computeIMC, computeRatio } from "../../utils/stat";
 import { generateUniqueId } from "../../utils/lib";
 
 
-export async function handler(event: APIGatewayProxyEvent, context: any): Promise<Response> {
-    console.log('Create player handler invoked', { event, context: { awsRequestId: context?.awsRequestId } });
-
+export async function addPlayer(body: string | null): Promise<Response> {
     try {
-        const { body } = event;
         let player: Player;
         try {
             const result = PlayerCreateSchema.safeParse(JSON.parse(body || ''))
@@ -52,4 +49,10 @@ export async function handler(event: APIGatewayProxyEvent, context: any): Promis
         console.error("Error creating player:", error);
         return InternalServerErrorResponse;
     }
+
+}
+export async function handler(event: APIGatewayProxyEvent, context: any): Promise<Response> {
+    console.log('Create player handler invoked', { event, context: { awsRequestId: context?.awsRequestId } });
+    const { body } = event;
+    return addPlayer(body);
 }

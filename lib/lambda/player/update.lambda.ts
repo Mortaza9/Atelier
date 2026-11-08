@@ -1,22 +1,17 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { SuccessResponse, Response, NotFoundResponse, InternalServerErrorResponse, BadRequestResponse } from "../../utils/responses";
-import { retrievePlayer, updatePlayer } from "../../model/player";
+import { updatePlayer } from "../../model/player";
 import { asApiResponse, Player, PlayerUpdateSchema, PlayerPartial } from "../../types/player";
 import { computeIMC } from "../../utils/stat";
 
-export async function handler(
-    event: APIGatewayProxyEvent,
-    context: any
-): Promise<Response> {
-    console.log('update player handler invoked', { event, context: { awsRequestId: context?.awsRequestId } });
+export async function doUpdatePlayer(
+    playerId: string | undefined,
+    body: string | null): Promise<Response> {
     try {
-        const playerId = event.pathParameters?.playerId;
         if (!playerId) {
             console.warn('Player ID missing in request path parameters');
             return BadRequestResponse("Player ID is required");
         }
-
-        const { body } = event;
         let result;
         try {
             result = PlayerUpdateSchema.safeParse(JSON.parse(body || ''))
@@ -29,7 +24,6 @@ export async function handler(
             return BadRequestResponse("Invalid request body");
         }
         const { data } = result.data;
-
         const player: PlayerPartial = {
             ...result.data,
             id: playerId,
@@ -40,10 +34,7 @@ export async function handler(
                 win: data?.last?.filter(game => game === 1)?.length,
             }
         };
-
-
         const updatedPlayer = await updatePlayer(playerId, player);
-
         if (!updatedPlayer) {
             console.warn(`Player with ID ${playerId} not found`);
             return NotFoundResponse(
@@ -55,4 +46,14 @@ export async function handler(
         console.error("Error retrieving player:", error);
         return InternalServerErrorResponse;
     }
+}
+
+export async function handler(
+    event: APIGatewayProxyEvent,
+    context: any
+): Promise<Response> {
+    console.log('update player handler invoked', { event, context: { awsRequestId: context?.awsRequestId } });
+    const playerId = event.pathParameters?.playerId;
+    const { body } = event;
+    return await doUpdatePlayer(playerId, body)
 }

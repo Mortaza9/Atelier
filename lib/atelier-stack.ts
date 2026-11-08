@@ -10,6 +10,7 @@ import { DATABASE_PORT } from './utils/constants';
 
 export interface AtelierStackProps extends cdk.StackProps {
   environmentName: string;
+  lambdaMemorySize: number;
   env: {
     account: string;
     region: string
@@ -117,6 +118,7 @@ export class AtelierStack extends cdk.Stack {
         vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
         securityGroups: [lambdaSecurityGroup],
         environment,
+        memorySize: props.lambdaMemorySize,
         timeout: cdk.Duration.seconds(30)
       });
       def.grant(fn);
