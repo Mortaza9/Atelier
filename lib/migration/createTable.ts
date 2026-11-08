@@ -23,14 +23,6 @@ async function initializeDatabase() {
 
     console.log('players table ensured. Creating indexes if they don\'t exist yet...');
 
-    // Safely create JSONB indexes if they don't exist yet
-    await db.schema
-        .createIndex('idx_players_country_code')
-        .ifNotExists()
-        .on(TABLE_NAME)
-        .column(sql`(country->>'code')`)
-        .execute();
-
     await db.schema
         .createIndex('idx_players_rank')
         .ifNotExists()
@@ -47,7 +39,6 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
     console.log('Migration handler invoked with event:', JSON.stringify(event));
 
     try {
-        // Run table creation only once per warm container startup
         if (!isInitialized) {
             console.log('Database not initialized in this warm container. Starting migration...');
             await initializeDatabase();

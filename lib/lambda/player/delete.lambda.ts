@@ -30,5 +30,4 @@ export async function handler(
     console.log('delete handler invoked', { event, context: { awsRequestId: context?.awsRequestId } });
     const playerId = event.pathParameters?.playerId;
     return await removePlayer(playerId);
-
 }
